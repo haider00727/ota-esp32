@@ -10,7 +10,7 @@ const char* password = "00000000";
 // Versioning
 const char* version_url = "https://haider00727.github.io/firmware.json";
 const char* current_version = "1.2.0";
-
+#define LED_BUILTIN 2;
 // LED pin
 const int ledPin = LED_BUILTIN;
 
@@ -52,7 +52,10 @@ void loop() {
     lastUpdateCheck = millis();
   }
 
+
+
   delay(100); // smooth loop
+  Serial.print("Current Version ==== ",current_version);
 }
 
 void blinkLED() {
