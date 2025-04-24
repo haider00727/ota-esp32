@@ -60,7 +60,7 @@ void loop() {
 }
 
 void blinkLED() {
-  if (millis() - lastBlinkTime >= 2000) {
+  if (millis() - lastBlinkTime >= 50) {
     ledState = !ledState;
     digitalWrite(ledPin, ledState);
     lastBlinkTime = millis();
