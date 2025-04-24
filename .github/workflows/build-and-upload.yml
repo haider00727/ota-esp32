@@ -31,11 +31,13 @@ jobs:
       run: |
         arduino-cli compile --fqbn esp32:esp32:esp32 src --output-dir ./build
 
+    - name: Rename output to firmware.bin
+      run: mv ./build/src.ino.bin ./firmware.bin
+
     - name: Extract version and generate firmware.json
       run: |
         VERSION=$(grep 'const char\* current_version' src/*.ino | sed -E 's/.*"(.+)".*/\1/')
         echo "Version: $VERSION"
-
         echo "{" > firmware.json
         echo "  \"version\": \"$VERSION\"," >> firmware.json
         echo "  \"url\": \"https://github.com/haider00727/ota-esp32/releases/latest/download/firmware.bin\"" >> firmware.json
@@ -47,9 +49,9 @@ jobs:
         tag_name: latest
         name: Latest OTA Firmware
         files: |
-          ./build/src.ino.bin
+          firmware.bin
           firmware.json
         draft: false
         prerelease: false
       env:
-        GITHUB_TOKEN: ${{ secrets.GH_PAT }}  # <-- Use your personal access token here
+        GITHUB_TOKEN: ${{ secrets.GH_PAT }}
