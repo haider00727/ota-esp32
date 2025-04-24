@@ -10,7 +10,7 @@ const char* password = "00000000";
 // Versioning
 const char* version_url = "https://github.com/haider00727/ota-esp32/releases/latest/download/firmware.json";
 
-const char* current_version = "1.8.0";
+const char* current_version = "1.9.0";
 #define LED_BUILTIN 2;
 // LED pin
 const int ledPin = LED_BUILTIN;
@@ -53,7 +53,7 @@ void loop() {
     lastUpdateCheck = millis();
   }
 
-
+Serial.print("Release 9   \n") ;
 
   delay(100); // smooth loop
 
