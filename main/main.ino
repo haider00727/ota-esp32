@@ -5,7 +5,7 @@
 #include <HTTPClient.h>
 #include <Update.h>
 #include <ArduinoJson.h>
-
+#define LED_BUILTIN 2 
 // WiFi credentials
 const char* ssid = "test";
 const char* password = "00000000";
@@ -13,7 +13,7 @@ const char* password = "00000000";
 // OTA Update configuration
 const char* firmwareUrl = "https://github.com/haider00727/ota-esp32/releases/download/v1.0.0/firmware.bin";
 const char* firmwareVersionUrl = "https://haider00727.github.io/firmware.json";
-const String currentVersion = "1.0.0"; // Current firmware version
+const String currentVersion = "1.0.1"; // Current firmware version
 
 void setupOTA() {
   ArduinoOTA
@@ -143,23 +143,36 @@ void setup() {
   
   // Check for updates immediately on startup
   checkForUpdates();
+  pinMode(LED_BUILTIN, OUTPUT); 
+
 }
 
 void loop() {
   ArduinoOTA.handle();
   
-  // Check for updates periodically (every 6 hours)
+  // Check for updates periodically (every 1 hours)
   static unsigned long lastCheck = 0;
-  if (millis() - lastCheck > 21600000) { // 6 hours in milliseconds
+  if (millis() - lastCheck > 60000) { // 1 hours in milliseconds
+    Serial.print("Check OTA\n");
     checkForUpdates();
     lastCheck = millis();
   }
   
-  // Your normal application code here
-  // For example, blink the built-in LED
-  static unsigned long lastBlink = 0;
-  if (millis() - lastBlink > 1000) {
-    digitalWrite(LED_BUILTIN, !digitalRead(LED_BUILTIN));
-    lastBlink = millis();
-  }
+  
+
+
+
+
+
+
+
+
+
+   digitalWrite(LED_BUILTIN, HIGH);  // Turn the LED on
+   delay(1000);                      // Wait for a second
+   digitalWrite(LED_BUILTIN, LOW);   // Turn the LED off
+   delay(1000);   
+
+
+
 }
