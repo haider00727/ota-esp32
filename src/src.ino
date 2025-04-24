@@ -6,9 +6,9 @@
 // Wi-Fi credentials
 const char* ssid = "test";
 const char* password = "00000000";
-
+ 
 // Versioning
-const char* version_url = "https://haider00727.github.io/firmware.json";
+const char* version_url = "http://devtestego.oss-me-central-1.aliyuncs.com/firmware.json";
 const char* current_version = "1.6.0";
 #define LED_BUILTIN 2;
 // LED pin
