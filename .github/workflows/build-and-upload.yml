@@ -34,3 +34,23 @@ jobs:
       run: |
         curl -X PUT --upload-file "./build/src.ino.bin" \
           "http://devtestego.oss-me-central-1.aliyuncs.com/firmware.bin"
+
+    - name: Extract version from code and generate firmware.json
+      run: |
+        VERSION=$(grep 'const char\* current_version' src/*.ino | sed -E 's/.*"(.+)".*/\1/')
+        echo "Version found: $VERSION"
+
+        cat <<EOF > firmware.json
+{
+  "version": "$VERSION",
+  "url": "http://devtestego.oss-me-central-1.aliyuncs.com/firmware.bin"
+}
+EOF
+
+    - name: Upload firmware.bin and firmware.json to OSS
+      run: |
+        curl -X PUT --upload-file "./build/src.ino.bin" \
+          "http://devtestego.oss-me-central-1.aliyuncs.com/firmware.bin"
+
+        curl -X PUT --upload-file "firmware.json" \
+          "http://devtestego.oss-me-central-1.aliyuncs.com/firmware.json"
