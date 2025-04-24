@@ -55,7 +55,7 @@ void loop() {
 
 
   delay(100); // smooth loop
-  Serial.print("Current Version ==== ",current_version);
+  Serial.print("Current Version ==== : %s\n ",current_version);
 }
 
 void blinkLED() {
