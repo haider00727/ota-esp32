@@ -1,4 +1,4 @@
-name: Build and Upload ESP32 Firmware
+name: Build and Release ESP32 Firmware
 
 on:
   push:
@@ -23,33 +23,31 @@ jobs:
       run: |
         arduino-cli core update-index
         arduino-cli core install esp32:esp32
-    - name: Install ArduinoJson library
+
+    - name: Install libraries
       run: arduino-cli lib install "ArduinoJson"
 
-    - name: Compile Sketch
+    - name: Compile sketch
       run: |
         arduino-cli compile --fqbn esp32:esp32:esp32 src --output-dir ./build
 
-    - name: Upload firmware to OSS
-      run: |
-        curl -X PUT --upload-file "./build/src.ino.bin" \
-          "http://devtestego.oss-me-central-1.aliyuncs.com/firmware.bin"
-
-    - name: Extract version from code and generate firmware.json
+    - name: Extract version and generate firmware.json
+      id: extract_version
       run: |
         VERSION=$(grep 'const char\* current_version' src/*.ino | sed -E 's/.*"(.+)".*/\1/')
-        echo "Version found: $VERSION"
+        echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
 
         echo "{" > firmware.json
         echo "  \"version\": \"$VERSION\"," >> firmware.json
-        echo "  \"url\": \"http://devtestego.oss-me-central-1.aliyuncs.com/firmware.bin\"" >> firmware.json
+        echo "  \"url\": \"https://github.com/haider00727/ota-esp32/releases/download/v$VERSION/firmware.bin\"" >> firmware.json
         echo "}" >> firmware.json
 
-
-    - name: Upload firmware.bin and firmware.json to OSS
-      run: |
-        curl -X PUT --upload-file "./build/src.ino.bin" \
-          "http://devtestego.oss-me-central-1.aliyuncs.com/firmware.bin"
-
-        curl -X PUT --upload-file "firmware.json" \
-          "http://devtestego.oss-me-central-1.aliyuncs.com/firmware.json"
+    - name: Create GitHub Release and Upload
+      uses: softprops/action-gh-release@v2
+      with:
+        tag_name: v${{ steps.extract_version.outputs.VERSION }}
+        files: |
+          ./build/src.ino.bin
+          firmware.json
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
