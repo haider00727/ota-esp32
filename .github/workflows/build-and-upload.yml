@@ -43,15 +43,13 @@ jobs:
         echo "  \"url\": \"https://github.com/haider00727/ota-esp32/releases/latest/download/firmware.bin\"" >> firmware.json
         echo "}" >> firmware.json
 
-    - name: Upload firmware to 'latest' release
+    - name: Upload firmware to 'latest' release in /files folder
       uses: softprops/action-gh-release@v2
       with:
         tag_name: latest
         name: Latest OTA Firmware
         files: |
-          firmware.bin
-          firmware.json
-        draft: false
-        prerelease: false
+          ./firmware.bin
+          ./firmware.json
       env:
         GITHUB_TOKEN: ${{ secrets.GH_PAT }}
