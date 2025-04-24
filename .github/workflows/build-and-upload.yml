@@ -1,4 +1,4 @@
-name: Build and Release ESP32 Firmware
+name: Build and Upload Static Firmware Release
 
 on:
   push:
@@ -32,22 +32,24 @@ jobs:
         arduino-cli compile --fqbn esp32:esp32:esp32 src --output-dir ./build
 
     - name: Extract version and generate firmware.json
-      id: extract_version
       run: |
         VERSION=$(grep 'const char\* current_version' src/*.ino | sed -E 's/.*"(.+)".*/\1/')
-        echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+        echo "Version: $VERSION"
 
         echo "{" > firmware.json
         echo "  \"version\": \"$VERSION\"," >> firmware.json
-        echo "  \"url\": \"https://github.com/haider00727/ota-esp32/releases/download/v$VERSION/firmware.bin\"" >> firmware.json
+        echo "  \"url\": \"https://github.com/haider00727/ota-esp32/releases/latest/download/firmware.bin\"" >> firmware.json
         echo "}" >> firmware.json
 
-    - name: Create GitHub Release and Upload
+    - name: Upload firmware to 'latest' release
       uses: softprops/action-gh-release@v2
       with:
-        tag_name: v${{ steps.extract_version.outputs.VERSION }}
+        tag_name: latest
+        name: Latest OTA Firmware
         files: |
           ./build/src.ino.bin
           firmware.json
+        draft: false
+        prerelease: false
       env:
-        GITHUB_TOKEN: ${{ secrets.GH_PAT }}
+        GITHUB_TOKEN: ${{ secrets.GH_PAT }}  # <-- Use your personal access token here
