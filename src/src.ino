@@ -9,7 +9,7 @@ const char* password = "00000000";
  
 // Versioning
 const char* version_url = "http://devtestego.oss-me-central-1.aliyuncs.com/firmware.json";
-const char* current_version = "1.6.0";
+const char* current_version = "1.7.0";
 #define LED_BUILTIN 2;
 // LED pin
 const int ledPin = LED_BUILTIN;
@@ -18,7 +18,7 @@ unsigned long lastBlinkTime = 0;
 unsigned long lastUpdateCheck = 0;
 
 bool ledState = false;
-const unsigned long updateInterval = 60000; // 60 seconds
+const unsigned long updateInterval = 30000; // 60 seconds
 
 void setup() {
   Serial.begin(115200);
@@ -60,7 +60,7 @@ void loop() {
 }
 
 void blinkLED() {
-  if (millis() - lastBlinkTime >= 200) {
+  if (millis() - lastBlinkTime >= 2000) {
     ledState = !ledState;
     digitalWrite(ledPin, ledState);
     lastBlinkTime = millis();
