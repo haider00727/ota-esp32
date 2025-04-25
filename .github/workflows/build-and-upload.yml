@@ -1,4 +1,4 @@
-name: Build and Upload Static Firmware Release
+name: Build and Commit Firmware to Files
 
 on:
   push:
@@ -12,6 +12,8 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
+      with:
+        token: ${{ secrets.GH_PAT }}
 
     - name: Set up arduino-cli
       run: |
@@ -38,18 +40,17 @@ jobs:
       run: |
         VERSION=$(grep 'const char\* current_version' src/*.ino | sed -E 's/.*"(.+)".*/\1/')
         echo "Version: $VERSION"
-        echo "{" > firmware.json
-        echo "  \"version\": \"$VERSION\"," >> firmware.json
-        echo "  \"url\": \"https://github.com/haider00727/ota-esp32/releases/latest/download/firmware.bin\"" >> firmware.json
-        echo "}" >> firmware.json
+        mkdir -p files
+        echo "{" > files/firmware.json
+        echo "  \"version\": \"$VERSION\"," >> files/firmware.json
+        echo "  \"url\": \"https://raw.githubusercontent.com/haider00727/ota-esp32/main/files/firmware.bin\"" >> files/firmware.json
+        echo "}" >> files/firmware.json
+        mv firmware.bin files/
 
-    - name: Upload firmware to 'latest' release in /files folder
-      uses: softprops/action-gh-release@v2
-      with:
-        tag_name: latest
-        name: Latest OTA Firmware
-        files: |
-          ./firmware.bin
-          ./firmware.json
-      env:
-        GITHUB_TOKEN: ${{ secrets.GH_PAT }}
+    - name: Commit and push firmware files
+      run: |
+        git config user.name "GitHub Actions"
+        git config user.email "actions@github.com"
+        git add files/firmware.*
+        git commit -m "Update firmware to version $VERSION"
+        git push

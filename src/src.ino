@@ -11,8 +11,7 @@ const char* password = "00000000";
 const char* current_version = "1.9.1";
 
 // URL to check for latest version info (JSON)
-const char* version_url = "https://github.com/haider00727/ota-esp32/releases/latest/download/firmware.json";
-
+const char* version_url = "https://raw.githubusercontent.com/haider00727/ota-esp32/main/files/firmware.json";
 // LED settings
 #define LED_BUILTIN 2
 const int ledPin = LED_BUILTIN;
