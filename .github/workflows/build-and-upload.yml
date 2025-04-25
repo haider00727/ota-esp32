@@ -56,24 +56,12 @@ jobs:
         ls -la files/  # List the files in the 'files' directory
         cat files/firmware.json  # Display the contents of firmware.json
 
-    - name: Download and Install Alibaba OSS CLI
-      run: |
-        # Download the correct tarball
-        curl -O https://cdn.aliyun.com/aliyun-cli/aliyun-cli-linux-amd64.tar.gz
-        
-        # Verify the download (optional)
-        file aliyun-cli-linux-amd64.tar.gz
-        
-        # Extract the tarball
-        tar -xzvf aliyun-cli-linux-amd64.tar.gz
-        
-        # Move the extracted files to a directory in PATH
-        sudo mv aliyun-cli-linux-amd64/aliyun /usr/local/bin/aliyun
-        
-        # Clean up by removing the tarball and extracted folder
-        rm -rf aliyun-cli-linux-amd64.tar.gz aliyun-cli-linux-amd64
+    name: Upload firmware to OSS
+    run: |
+      # Upload firmware.bin to the OSS bucket
+      curl -X PUT --upload-file "./firmware.bin" \
+        "http://devtestego.oss-me-central-1.aliyuncs.com/firmware.bin"
 
-    - name: Upload firmware to Alibaba OSS
-      run: |
-        ossutil cp files/firmware.bin oss://devtestego/firmware.bin --force
-        ossutil cp files/firmware.json oss://devtestego/firmware.json --force
+      # Upload firmware.json to the OSS bucket
+      curl -X PUT --upload-file "./firmware.json" \
+        "http://devtestego.oss-me-central-1.aliyuncs.com/firmware.json"
