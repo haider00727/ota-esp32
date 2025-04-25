@@ -1,4 +1,4 @@
-name: Build and Commit Firmware to Files
+name: Build and Commit Firmware to External Repo
 
 on:
   push:
@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
+    - name: Checkout source repo
       uses: actions/checkout@v3
       with:
         token: ${{ secrets.GH_PAT }}
@@ -40,18 +40,23 @@ jobs:
       run: |
         VERSION=$(grep 'const char\* current_version' src/*.ino | sed -E 's/.*"(.+)".*/\1/')
         echo "Version: $VERSION"
-        rm -rf files
         mkdir -p files
         echo "{" > files/firmware.json
         echo "  \"version\": \"$VERSION\"," >> files/firmware.json
-        echo "  \"url\": \"http://raw.githubusercontent.com/haider00727/ota-esp32/main/files/firmware.bin\"" >> files/firmware.json
+        echo "  \"url\": \"https://raw.githubusercontent.com/haider00727/ota-esp32-files/main/firmware.bin\"" >> files/firmware.json
         echo "}" >> files/firmware.json
         mv firmware.bin files/
 
-    - name: Commit and push firmware files
+    - name: Push to ota-esp32-files repo
       run: |
+        cd files
+        git init
         git config user.name "GitHub Actions"
         git config user.email "actions@github.com"
-        git add -A files/
-        git commit -m "Update firmware to version $VERSION  " || echo "No changes to commit"
-        git push
+        git remote add origin https://x-access-token:${{ secrets.GH_PAT }}@github.com/haider00727/ota-esp32-files.git
+        git fetch origin main
+        git checkout main
+        cp firmware.* .
+        git add firmware.*
+        git commit -m "Update firmware to version *** $VERSION" || echo "No changes to commit"
+        git push origin main

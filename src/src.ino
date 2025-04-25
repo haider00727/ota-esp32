@@ -11,7 +11,7 @@ const char* password = "00000000";
 const char* current_version = "1.9.2";
 
 // URL to check for latest version info (JSON)
-const char* version_url = "https://raw.githubusercontent.com/haider00727/ota-esp32/main/files/firmware.json";
+const char* version_url = "https://raw.githubusercontent.com/haider00727/ota-esp32-files/main/firmware.json";
 // LED settings
 #define LED_BUILTIN 2
 const int ledPin = LED_BUILTIN;
@@ -102,7 +102,8 @@ void checkForUpdates() {
 }
 
 void performOTA(const char* binURL) {
-  WiFiClient client;
+  WiFiClientSecure client;
+  client.setInsecure();
   HTTPClient http;
 
   http.begin(client, binURL);
