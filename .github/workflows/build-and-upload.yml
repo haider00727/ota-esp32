@@ -42,7 +42,7 @@ jobs:
         mkdir -p files
         echo "{" > files/firmware.json
         echo "  \"version\": \"$VERSION\"," >> files/firmware.json
-        echo "  \"url\": \"https://devtestego.oss-me-central-1.aliyuncs.com/firmware.bin\"" >> files/firmware.json
+        echo "  \"url\": \"http://devtestego.oss-me-central-1.aliyuncs.com/firmware.bin\"" >> files/firmware.json
         echo "}" >> files/firmware.json
 
     - name: Move firmware files to 'files' directory
