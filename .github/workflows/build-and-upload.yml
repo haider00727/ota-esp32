@@ -60,8 +60,8 @@ jobs:
       run: |
       # Upload firmware.bin to the OSS bucket
         curl -X PUT --upload-file "./firmware.bin" \
-        "http://devtestego.oss-me-central-1.aliyuncs.com/firmware.bin"
+            "http://devtestego.oss-me-central-1.aliyuncs.com/firmware.bin"
 
       # Upload firmware.json to the OSS bucket
         curl -X PUT --upload-file "./firmware.json" \
-        "http://devtestego.oss-me-central-1.aliyuncs.com/firmware.json"
+            "http://devtestego.oss-me-central-1.aliyuncs.com/firmware.json"
