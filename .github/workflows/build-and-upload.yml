@@ -1,4 +1,4 @@
-name: Build and Commit Firmware to External Repo
+name: Build and Commit Firmware to Files
 
 on:
   push:
@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout source repo
+    - name: Checkout code
       uses: actions/checkout@v3
       with:
         token: ${{ secrets.GH_PAT }}
@@ -40,14 +40,19 @@ jobs:
       run: |
         VERSION=$(grep 'const char\* current_version' src/*.ino | sed -E 's/.*"(.+)".*/\1/')
         echo "Version: $VERSION"
+        rm -rf files
         mkdir -p files
         echo "{" > files/firmware.json
         echo "  \"version\": \"$VERSION\"," >> files/firmware.json
-        echo "  \"url\": \"https://raw.githubusercontent.com/haider00727/ota-esp32-files/main/firmware.bin\"" >> files/firmware.json
+        echo "  \"url\": \"http://raw.githubusercontent.com/haider00727/ota-esp32-files/main/firmware.bin\"" >> files/firmware.json
         echo "}" >> files/firmware.json
-        mv firmware.bin files/
 
-    - name: Push to ota-esp32-files repo
+    - name: Move firmware files to 'files' directory
+      run: |
+        mv firmware.bin files/
+        mv files/firmware.json files/
+
+    - name: Commit and push firmware files
       run: |
         cd files
         git init
@@ -56,15 +61,6 @@ jobs:
         git remote add origin https://x-access-token:${{ secrets.GH_PAT }}@github.com/haider00727/ota-esp32-files.git
         git fetch origin || echo "Remote 'origin' not found, initializing"
         git checkout -b main || echo "Branch 'main' doesn't exist, creating it"
-        
-        # Remove old firmware files if they exist
-        rm -f firmware.bin firmware.json
-        
-        # Copy the new firmware files into the 'files' folder
-        cp ../firmware.bin .
-        cp ../firmware.json .
-
         git add firmware.bin firmware.json
         git commit -m "Update firmware to version $VERSION" || echo "No changes to commit"
         git push --set-upstream origin main || git push -u origin main
-
