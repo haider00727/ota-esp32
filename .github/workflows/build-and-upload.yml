@@ -47,11 +47,7 @@ jobs:
         echo "  \"url\": \"http://raw.githubusercontent.com/haider00727/ota-esp32-files/main/firmware.bin\"" >> files/firmware.json
         echo "}" >> files/firmware.json
 
-    - name: Move firmware files to 'files' directory
-      run: |
-        mv firmware.bin files/
-        mv files/firmware.json files/
-
+ 
     - name: Commit and push firmware files
       run: |
         cd files
