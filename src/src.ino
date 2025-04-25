@@ -8,7 +8,7 @@ const char* ssid = "test";
 const char* password = "00000000";
 
 // Current firmware version
-const char* current_version = "1.9.1";
+const char* current_version = "1.9.2";
 
 // URL to check for latest version info (JSON)
 const char* version_url = "https://raw.githubusercontent.com/haider00727/ota-esp32/main/files/firmware.json";
@@ -52,7 +52,7 @@ void loop() {
     lastUpdateCheck = millis();
   }
 
- Serial.println("Test 1");
+ Serial.println("Test  2");
   delay(100);
 }
 
