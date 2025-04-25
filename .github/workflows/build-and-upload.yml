@@ -1,4 +1,4 @@
-name: Build and Commit Firmware to Files
+name: Build and Upload Firmware to Alibaba OSS
 
 on:
   push:
@@ -12,8 +12,6 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
-      with:
-        token: ${{ secrets.GH_PAT }}
 
     - name: Set up arduino-cli
       run: |
@@ -44,25 +42,25 @@ jobs:
         mkdir -p files
         echo "{" > files/firmware.json
         echo "  \"version\": \"$VERSION\"," >> files/firmware.json
-        echo "  \"url\": \"http://raw.githubusercontent.com/haider00727/ota-esp32-files/main/firmware.bin\"" >> files/firmware.json
+        echo "  \"url\": \"https://devtestego.oss-me-central-1.aliyuncs.com/firmware.bin\"" >> files/firmware.json
         echo "}" >> files/firmware.json
 
-    
+    - name: Move firmware files to 'files' directory
+      run: |
+        mv firmware.bin files/  # Move firmware.bin to files folder
+        mv files/firmware.json files/  # Ensure firmware.json is in the files folder
 
     - name: Check that firmware files exist
       run: |
-        ls -la files/
-        cat files/firmware.json
+        echo "Checking contents of files directory:"
+        ls -la files/  # List the files in the 'files' directory
+        cat files/firmware.json  # Display the contents of firmware.json
 
-    - name: Commit and push firmware files
+    - name: Install Alibaba Cloud OSS CLI
       run: |
-        cd files
-        git init
-        git config user.name "GitHub Actions"
-        git config user.email "actions@github.com"
-        git remote add origin https://x-access-token:${{ secrets.GH_PAT }}@github.com/haider00727/ota-esp32-files.git
-        git fetch origin || echo "Remote 'origin' not found, initializing"
-        git checkout -b main || echo "Branch 'main' doesn't exist, creating it"
-        git add firmware.bin firmware.json
-        git commit -m "Update firmware to version $VERSION" || echo "No changes to commit"
-        git push --set-upstream origin main || git push -u origin main
+        curl -sSL https://aliyuncli.alicdn.com/aliyun-cli-linux-amd64.tar.gz | tar -xz -C /usr/local/bin
+
+    - name: Upload firmware to Alibaba OSS
+      run: |
+        ossutil cp files/firmware.bin oss://devtestego/firmware.bin --force
+        ossutil cp files/firmware.json oss://devtestego/firmware.json --force
