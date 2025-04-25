@@ -40,6 +40,7 @@ jobs:
       run: |
         VERSION=$(grep 'const char\* current_version' src/*.ino | sed -E 's/.*"(.+)".*/\1/')
         echo "Version: $VERSION"
+        rm -rf files
         mkdir -p files
         echo "{" > files/firmware.json
         echo "  \"version\": \"$VERSION\"," >> files/firmware.json
@@ -51,6 +52,6 @@ jobs:
       run: |
         git config user.name "GitHub Actions"
         git config user.email "actions@github.com"
-        git add files/firmware.*
-        git commit -m "Update firmware to version $VERSION"
+        git add -A files/
+        git commit -m "Update firmware to version $VERSION" || echo "No changes to commit"
         git push
