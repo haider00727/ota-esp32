@@ -44,7 +44,7 @@ jobs:
         mkdir -p files
         echo "{" > files/firmware.json
         echo "  \"version\": \"$VERSION\"," >> files/firmware.json
-        echo "  \"url\": \"https://raw.githubusercontent.com/haider00727/ota-esp32/main/files/firmware.bin\"" >> files/firmware.json
+        echo "  \"url\": \"http://raw.githubusercontent.com/haider00727/ota-esp32/main/files/firmware.bin\"" >> files/firmware.json
         echo "}" >> files/firmware.json
         mv firmware.bin files/
 
