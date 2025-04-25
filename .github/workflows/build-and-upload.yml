@@ -51,12 +51,12 @@ jobs:
         # No need to move firmware.json since it's already in the correct folder
  
     - name: Check that firmware files exist
-      run: |
+    run: |
         echo "Checking contents of files directory:"
         ls -la files/  # List the files in the 'files' directory
         cat files/firmware.json  # Display the contents of firmware.json
 
-    name: Upload firmware to OSS
+    - name: Upload firmware to OSS
     run: |
       # Upload firmware.bin to the OSS bucket
       curl -X PUT --upload-file "./firmware.bin" \
