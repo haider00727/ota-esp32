@@ -8,10 +8,10 @@ const char* ssid = "test";
 const char* password = "00000000";
 
 // Current firmware version
-const char* current_version = "1.9.2";
+const char* current_version = "1.9.3";
 
-// URL to check for latest version info (JSON)
-const char* version_url = "https://raw.githubusercontent.com/haider00727/ota-esp32-files/main/firmware.json";
+// URL to check for latest version info (JSON) from Alibaba OSS
+const char* version_url = "https://devtestego.oss-me-central-1.aliyuncs.com/firmware.json";  // Change to OSS URL
 // LED settings
 #define LED_BUILTIN 2
 const int ledPin = LED_BUILTIN;
@@ -52,7 +52,7 @@ void loop() {
     lastUpdateCheck = millis();
   }
 
- Serial.println("Test init");
+  Serial.println("Test init");
   delay(100);
 }
 
@@ -67,7 +67,7 @@ void blinkLED() {
 void checkForUpdates() {
   HTTPClient http;
   http.begin(version_url);
-  http.setFollowRedirects(HTTPC_STRICT_FOLLOW_REDIRECTS);  // Follow GitHub redirect
+  http.setFollowRedirects(HTTPC_STRICT_FOLLOW_REDIRECTS);  // Follow OSS redirect
 
   int httpCode = http.GET();
   if (httpCode == 200) {
@@ -106,7 +106,7 @@ void performOTA(const char* binURL) {
   HTTPClient http;
 
   http.begin(client, binURL);
-  http.setFollowRedirects(HTTPC_STRICT_FOLLOW_REDIRECTS);  // Follow GitHub redirect
+  http.setFollowRedirects(HTTPC_STRICT_FOLLOW_REDIRECTS);  // Follow OSS redirect
   int httpCode = http.GET();
 
   if (httpCode == 200) {
