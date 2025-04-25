@@ -54,9 +54,17 @@ jobs:
         git config user.name "GitHub Actions"
         git config user.email "actions@github.com"
         git remote add origin https://x-access-token:${{ secrets.GH_PAT }}@github.com/haider00727/ota-esp32-files.git
-        git fetch origin main || git branch -M main  # If the 'main' branch does not exist, create it
-        git checkout main
-        cp firmware.* .
-        git add firmware.*
-        git commit -m "Update firmware to 9 version $VERSION" || echo "No changes to commit"
-        git push origin main
+        git fetch origin || echo "Remote 'origin' not found, initializing"
+        git checkout -b main || echo "Branch 'main' doesn't exist, creating it"
+        
+        # Remove old firmware files if they exist
+        rm -f firmware.bin firmware.json
+        
+        # Copy the new firmware files into the 'files' folder
+        cp ../firmware.bin .
+        cp ../firmware.json .
+
+        git add firmware.bin firmware.json
+        git commit -m "Update firmware to version $VERSION" || echo "No changes to commit"
+        git push --set-upstream origin main || git push -u origin main
+
