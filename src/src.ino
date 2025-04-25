@@ -52,7 +52,7 @@ void loop() {
     lastUpdateCheck = millis();
   }
 
- Serial.println("Test  2");
+ Serial.println("Test init");
   delay(100);
 }
 
@@ -102,8 +102,7 @@ void checkForUpdates() {
 }
 
 void performOTA(const char* binURL) {
-  WiFiClientSecure client;
-  client.setInsecure();
+  WiFiClient client;
   HTTPClient http;
 
   http.begin(client, binURL);
