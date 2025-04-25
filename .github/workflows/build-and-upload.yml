@@ -49,7 +49,7 @@ jobs:
       run: |
         mv firmware.bin files/  # Move firmware.bin to files folder
         # No need to move firmware.json since it's already in the correct folder
- 
+
     - name: Check that firmware files exist
       run: |
         echo "Checking contents of files directory:"
@@ -58,10 +58,10 @@ jobs:
 
     - name: Upload firmware to OSS
       run: |
-      # Upload firmware.bin to the OSS bucket
-        curl -X PUT --upload-file "./firmware.bin" \
-            "http://devtestego.oss-me-central-1.aliyuncs.com/firmware.bin"
+        # Upload firmware.bin to the OSS bucket
+        curl -X PUT --upload-file "./files/firmware.bin" \
+          "http://devtestego.oss-me-central-1.aliyuncs.com/firmware.bin"
 
-      # Upload firmware.json to the OSS bucket
-        curl -X PUT --upload-file "./firmware.json" \
-            "http://devtestego.oss-me-central-1.aliyuncs.com/firmware.json"
+        # Upload firmware.json to the OSS bucket
+        curl -X PUT --upload-file "./files/firmware.json" \
+          "http://devtestego.oss-me-central-1.aliyuncs.com/firmware.json"
