@@ -48,7 +48,7 @@ jobs:
     - name: Move firmware files to 'files' directory
       run: |
         mv firmware.bin files/  # Move firmware.bin to files folder
-        mv files/firmware.json files/  # Ensure firmware.json is in the files folder
+        # No need to move firmware.json since it's already in the correct folder
 
     - name: Check that firmware files exist
       run: |
