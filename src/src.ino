@@ -6,26 +6,28 @@
 // Wi-Fi credentials
 const char* ssid = "test";
 const char* password = "00000000";
- 
-// Versioning
+
+// Current firmware version
+const char* current_version = "1.9.1";
+
+// URL to check for latest version info (JSON)
 const char* version_url = "https://github.com/haider00727/ota-esp32/releases/latest/download/firmware.json";
 
-const char* current_version = "1.9.0";
-#define LED_BUILTIN 2;
-// LED pin
+// LED settings
+#define LED_BUILTIN 2
 const int ledPin = LED_BUILTIN;
-
 unsigned long lastBlinkTime = 0;
-unsigned long lastUpdateCheck = 0;
-
 bool ledState = false;
-const unsigned long updateInterval = 30000; // 60 seconds
+
+// Update check interval
+const unsigned long updateInterval = 60000; // 60 seconds
+unsigned long lastUpdateCheck = 0;
 
 void setup() {
   Serial.begin(115200);
   delay(1000);
 
-  // Initialize LED
+  // LED setup
   pinMode(ledPin, OUTPUT);
 
   // Connect to Wi-Fi
@@ -37,31 +39,26 @@ void setup() {
   }
   Serial.println("\nConnected to WiFi");
 
-  // First update check on boot
+  // Initial update check
   checkForUpdates();
   lastUpdateCheck = millis();
 }
 
 void loop() {
+  blinkLED();
 
- blinkLED();
-
-  // Check for OTA update every 1 minute
   if (millis() - lastUpdateCheck >= updateInterval) {
-    Serial.print("Checking for update \n");
+    Serial.println("Checking for update...");
     checkForUpdates();
     lastUpdateCheck = millis();
   }
 
-Serial.print("Release 9   \n") ;
-
-  delay(100); // smooth loop
-
-
+ Serial.println("Test 1");
+  delay(100);
 }
 
 void blinkLED() {
-  if (millis() - lastBlinkTime >= 50) {
+  if (millis() - lastBlinkTime >= 1000) {
     ledState = !ledState;
     digitalWrite(ledPin, ledState);
     lastBlinkTime = millis();
@@ -71,8 +68,9 @@ void blinkLED() {
 void checkForUpdates() {
   HTTPClient http;
   http.begin(version_url);
-  int httpCode = http.GET();
+  http.setFollowRedirects(HTTPC_STRICT_FOLLOW_REDIRECTS);  // Follow GitHub redirect
 
+  int httpCode = http.GET();
   if (httpCode == 200) {
     String payload = http.getString();
     Serial.println("Received version info:");
@@ -96,6 +94,7 @@ void checkForUpdates() {
     } else {
       Serial.println("Already on latest version.");
     }
+
   } else {
     Serial.printf("Failed to get version info, HTTP code: %d\n", httpCode);
   }
@@ -108,6 +107,7 @@ void performOTA(const char* binURL) {
   HTTPClient http;
 
   http.begin(client, binURL);
+  http.setFollowRedirects(HTTPC_STRICT_FOLLOW_REDIRECTS);  // Follow GitHub redirect
   int httpCode = http.GET();
 
   if (httpCode == 200) {
@@ -127,7 +127,7 @@ void performOTA(const char* binURL) {
 
       if (Update.end()) {
         if (Update.isFinished()) {
-          Serial.println("OTA done!");
+          Serial.println("OTA done! Rebooting...");
           ESP.restart();
         } else {
           Serial.println("OTA not finished.");
