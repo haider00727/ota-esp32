@@ -58,8 +58,8 @@ jobs:
 
     - name: Download and Install Alibaba OSS CLI
       run: |
-        # Download the tarball first
-        curl -O https://aliyuncli.alicdn.com/aliyun-cli-linux-amd64.tar.gz
+        # Download the correct tarball
+        curl -O https://cdn.aliyun.com/aliyun-cli/aliyun-cli-linux-amd64.tar.gz
         
         # Verify the download (optional)
         file aliyun-cli-linux-amd64.tar.gz
@@ -72,7 +72,7 @@ jobs:
         
         # Clean up by removing the tarball and extracted folder
         rm -rf aliyun-cli-linux-amd64.tar.gz aliyun-cli-linux-amd64
-        
+
     - name: Upload firmware to Alibaba OSS
       run: |
         ossutil cp files/firmware.bin oss://devtestego/firmware.bin --force
