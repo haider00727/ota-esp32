@@ -17,8 +17,13 @@ jobs:
       run: |
         curl -fsSL https://raw.githubusercontent.com/arduino/arduino-cli/master/install.sh | sh
         sudo mv bin/arduino-cli /usr/local/bin/
-        arduino-cli config init
-
+        arduino-cli config init 
+        
+    - name: Check version
+      run: |
+        VERSIONtest=$(grep 'const char\* current_version' src/src.ino | sed -E 's/.*"(.+)".*/\1/')
+        echo "Version: $VERSIONtest"
+        
     - name: Install ESP32 Core
       run: |
         arduino-cli core update-index
@@ -39,7 +44,7 @@ jobs:
 
     - name: Extract version and generate firmware.json
       run: |
-        VERSION=$(grep 'const char\* current_version' src/*.ino | sed -E 's/.*"(.+)".*/\1/')
+        VERSION=$(grep 'const char\* current_version' src/src.ino | sed -E 's/.*"(.+)".*/\1/')
         echo "Version: $VERSION"
         rm -rf files
         mkdir -p files
