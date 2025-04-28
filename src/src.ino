@@ -208,7 +208,7 @@ void loop() {
   if (now - lastMsg > 3000) {
     lastMsg = now;
     int waterLevel = random(0, 101);
-    String payload = "{\"water_level\": " + String(waterLevel) + "}";
+    String payload = "{\"water_level\": " + String(waterLevel) + ",\"ota_version\": " + String(current_version_new) + "}";
     Serial.print("Publishing water level: ");
     Serial.println(payload);
     client.publish("esp32/waterlevel", payload.c_str());
