@@ -12,7 +12,7 @@ const char* password = "00000000";
 const char* mqtt_server = "test.mosquitto.org";
 
 // OTA variables
-const char* current_version = "1.0.1";
+const char* current_version = "1.0.2";
 const char* version_url = "https://devtestego.oss-me-central-1.aliyuncs.com/firmware.json";
 
 // LED settings
