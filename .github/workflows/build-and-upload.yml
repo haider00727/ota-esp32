@@ -21,7 +21,7 @@ jobs:
         
     - name: Check version
       run: |
-        VERSIONtest=$(grep 'const char\* current_version' src/src.ino | sed -E 's/.*"(.+)".*/\1/')
+        VERSIONtest=$(grep 'const char\* current_version_new' src/src.ino | sed -E 's/.*"(.+)".*/\1/')
         echo "Version: $VERSIONtest"
         
     - name: Install ESP32 Core
@@ -44,7 +44,7 @@ jobs:
 
     - name: Extract version and generate firmware.json
       run: |
-        VERSION=$(grep 'const char\* current_version' src/src.ino | sed -E 's/.*"(.+)".*/\1/')
+        VERSION=$(grep 'const char\* current_version_new' src/src.ino | sed -E 's/.*"(.+)".*/\1/')
         echo "Version: $VERSION"
         rm -rf files
         mkdir -p files
