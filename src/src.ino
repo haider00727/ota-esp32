@@ -233,7 +233,6 @@ void loop() {
 // const char* password = "00000000";
 
 // // Current firmware version
-// const char* current_version_new = "1.9.5";
 
 // // URL to check for latest version info (JSON) from Alibaba OSS
 // const char* version_url = "https://devtestego.oss-me-central-1.aliyuncs.com/firmware.json";  // Change to OSS URL
