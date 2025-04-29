@@ -13,7 +13,7 @@ const char* mqtt_server = "test.mosquitto.org";
 
 
 // OTA variables
-const char* current_version_new = "0.0.5";
+const char* current_version_new = "0.0.6";
 const char* version_url = "https://devtestego.oss-me-central-1.aliyuncs.com/firmware.json";
 
 // LED settings
@@ -73,7 +73,7 @@ void reconnectMQTT() {
 
     if (client.connect(clientId.c_str())) {
       Serial.println("connected");
-      client.subscribe("esp32/waterlevel");
+      client.subscribe("haider/waterlevel");
     } else {
       Serial.print("failed, rc=");
       Serial.print(client.state());
@@ -209,10 +209,10 @@ void loop() {
   if (now - lastMsg > 3000) {
     lastMsg = now;
     int waterLevel = random(0, 101);
-    String payload = "{\"water_level\": " + String(waterLevel) + ",\"ota_version\": " + String(current_version_new) + "}";
+    String payload = "{\"water_level\": " + String(waterLevel) + ",\"ota_version\": " + "\"" +String(current_version_new) + "\"" + + "}";
     Serial.print("Publishing water level: ");
     Serial.println(payload);
-    client.publish("esp32/waterlevel", payload.c_str());
+    client.publish("haider/waterlevel", payload.c_str());
   }
 
   // OTA check every 60 seconds
